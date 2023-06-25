@@ -487,6 +487,7 @@ func (fs *Filesystem) mountRemote(fsManager *manager.Manager, useSharedDaemon bo
 	if useSharedDaemon {
 		if fsManager.FsDriver == config.FsDriverFusedev {
 			r.SetMountpoint(path.Join(d.HostMountpoint(), r.SnapshotID))
+			r.SetBlobfsMountpoint(path.Join(d.HostMountpoint(), r.SnapshotID+"_blobfs"))
 		} else {
 			r.SetMountpoint(path.Join(r.GetSnapshotDir(), "mnt"))
 		}
@@ -494,7 +495,8 @@ func (fs *Filesystem) mountRemote(fsManager *manager.Manager, useSharedDaemon bo
 			return errors.Wrapf(err, "failed to mount")
 		}
 	} else {
-		r.SetMountpoint(path.Join(d.HostMountpoint()))
+		r.SetMountpoint(path.Join(d.HostMountpoint(), "rafs"))
+		r.SetBlobfsMountpoint(path.Join(d.HostMountpoint(), "blobfs"))
 		err := fsManager.StartDaemon(d)
 		if err != nil {
 			return errors.Wrapf(err, "start daemon")

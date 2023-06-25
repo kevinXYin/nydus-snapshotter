@@ -111,6 +111,8 @@ type Rafs struct {
 	// 1. A host kernel EROFS mountpoint
 	// 2. Absolute path to each rafs instance root directory.
 	Mountpoint  string
+	// Absolute path to blobfs for each rafs instance.
+	BlobfsMountpoing string
 	Annotations map[string]string
 }
 
@@ -168,12 +170,25 @@ func (r *Rafs) GetMountpoint() string {
 	return r.Mountpoint
 }
 
+func (r *Rafs) SetBlobfsMountpoint(mp string) {
+	r.BlobfsMountpoing = mp
+}
+
+// Get top level mount point to blobfs for the RAFS instance:
+func (r *Rafs) GetBlobfsMountpoint() string {
+	return r.BlobfsMountpoing
+}
+
 // Get the sub-directory under a FUSE mount point to mount a RAFS instance.
 // For a nydusd daemon in shared mode, one or more RAFS filesystem instances can be mounted
 // to sub-directories of the FUSE filesystem. This method returns the subdirectory for a
 // RAFS filesystem instance.
 func (r *Rafs) RelaMountpoint() string {
 	return filepath.Join("/", r.SnapshotID)
+}
+
+func (r *Rafs) RelaBlobfsMountpoint() string {
+	return filepath.Join("/", r.SnapshotID+"_blobfs")
 }
 
 func (r *Rafs) BootstrapFile() (string, error) {

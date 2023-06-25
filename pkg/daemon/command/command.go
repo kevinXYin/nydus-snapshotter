@@ -30,6 +30,8 @@ type DaemonCommand struct {
 	Config     string `type:"param" name:"config"`
 	Bootstrap  string `type:"param" name:"bootstrap"`
 	Mountpoint string `type:"param" name:"mountpoint"`
+	VirtualMountpoint string `type:"param" name:"virtual-mountpoint"`
+	BlobfsMountpoint string `type:"param" name:"blobfs-mountpoint"`
 	APISock    string `type:"param" name:"apisock"`
 	LogLevel   string `type:"param" name:"log-level"`
 	Supervisor string `type:"param" name:"supervisor"`
@@ -137,6 +139,18 @@ func WithBootstrap(b string) Opt {
 func WithMountpoint(m string) Opt {
 	return func(cmd *DaemonCommand) {
 		cmd.Mountpoint = m
+	}
+}
+
+func WithVirtualMountpoint(m string) Opt {
+	return func(cmd *DaemonCommand) {
+		cmd.VirtualMountpoint = m
+	}
+}
+
+func WithBlobfsMountpoint(m string) Opt {
+	return func(cmd *DaemonCommand) {
+		cmd.BlobfsMountpoint = m
 	}
 }
 

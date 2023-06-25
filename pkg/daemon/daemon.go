@@ -259,9 +259,15 @@ func (d *Daemon) sharedFusedevMount(rafs *Rafs) error {
 		return errors.Wrap(err, "dump instance configuration")
 	}
 
-	err = client.Mount(rafs.RelaMountpoint(), bootstrap, cfg)
+	err = client.Mount(rafs.RelaMountpoint(), bootstrap, cfg, false)
 	if err != nil {
 		return errors.Wrapf(err, "mount rafs instance")
+	}
+
+	// TODO use a flag to control blobfs mount, and forward compatble
+	err = client.Mount(rafs.RelaBlobfsMountpoint(), bootstrap, cfg, true)
+	if err != nil {
+		return errors.Wrapf(err, "mount blobfs for rafs instance")
 	}
 
 	return nil
@@ -336,7 +342,11 @@ func (d *Daemon) SharedUmount(rafs *Rafs) error {
 		if err != nil {
 			return errors.Wrapf(err, "umount instance %s", rafs.SnapshotID)
 		}
-		return c.Umount(rafs.RelaMountpoint())
+		if err = c.Umount(rafs.RelaMountpoint()); err != nil {
+			return err
+		}
+		// TODO use flag
+		return c.Umount(rafs.RelaBlobfsMountpoint())
 	default:
 		return errors.Errorf("unsupported fs driver %s", d.States.FsDriver)
 	}

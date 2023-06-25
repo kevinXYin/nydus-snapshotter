@@ -148,6 +148,9 @@ func (m *Manager) BuildDaemonCommand(d *daemon.Daemon, bin string, upgrade bool)
 			cmdOpts = append(cmdOpts,
 				command.WithConfig(d.ConfigFile("")),
 				command.WithBootstrap(bootstrap),
+				// TODO use flag & forward compatible
+				command.WithVirtualMountpoint("/rafs"),
+				command.WithBlobfsMountpoint("/blobfs"),
 			)
 		default:
 			return nil, errors.Errorf("invalid daemon mode %s ", d.States.DaemonMode)

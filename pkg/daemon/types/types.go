@@ -51,7 +51,14 @@ type MountRequest struct {
 	Config string `json:"config"`
 }
 
-func NewMountRequest(source, config string) MountRequest {
+func NewMountRequest(source, config string, isBlobfs bool) MountRequest {
+	if isBlobfs {
+		return MountRequest{
+			FsType: "blobfs",
+			Source: source,
+			Config: config,
+		}
+	}
 	return MountRequest{
 		FsType: "rafs",
 		Source: source,

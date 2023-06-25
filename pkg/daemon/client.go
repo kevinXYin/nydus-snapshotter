@@ -62,8 +62,8 @@ const (
 type NydusdClient interface {
 	GetDaemonInfo() (*types.DaemonInfo, error)
 
-	Mount(mountpoint, bootstrap, daemonConfig string) error
 	Umount(mountpoint string) error
+	Mount(mountpoint, bootstrap, daemonConfig string, isBlobfs bool) error
 
 	BindBlob(daemonConfig string) error
 	UnbindBlob(domainID, blobID string) error
@@ -227,8 +227,8 @@ func (c *nydusdClient) GetDaemonInfo() (*types.DaemonInfo, error) {
 	return &info, nil
 }
 
-func (c *nydusdClient) Mount(mp, bootstrap, mountConfig string) error {
-	cmd, err := json.Marshal(types.NewMountRequest(bootstrap, mountConfig))
+func (c *nydusdClient) Mount(mp, bootstrap, mountConfig string, isBlobfs bool) error {
+	cmd, err := json.Marshal(types.NewMountRequest(bootstrap, mountConfig, isBlobfs))
 	if err != nil {
 		return errors.Wrap(err, "construct mount request")
 	}
